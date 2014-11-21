@@ -1,0 +1,10 @@
+Demo/Library
+Demo/Temp
+*.userprefs
+*.suo
+*.sln
+*.csproj
+*.db
+*.db.meta
+Demo/Web
+Demo/obj
