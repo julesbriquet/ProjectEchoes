@@ -1,10 +1,10 @@
-Demo/Library
-Demo/Temp
+Echoes/Library
+Echoes/Temp
 *.userprefs
 *.suo
 *.sln
 *.csproj
 *.db
 *.db.meta
-Demo/Web
-Demo/obj
+Echoes/Web
+Echoes/obj
