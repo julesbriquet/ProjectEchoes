@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent (typeof(AudioSource))]
-public class GunSystem : MonoBehaviour {
+public class GunEntity : MonoBehaviour {
 
     public enum GunType
     {

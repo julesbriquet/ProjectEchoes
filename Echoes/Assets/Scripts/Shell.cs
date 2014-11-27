@@ -13,6 +13,7 @@ public class Shell : MonoBehaviour {
 	void Start () {
         mat = renderer.material;
         originalColor = mat.color;
+        transform.eulerAngles = transform.eulerAngles + new Vector3(90, 0, 0);
 
         StartCoroutine("Fade", -lifeTime);
         Destroy(gameObject, lifeTime);
@@ -62,9 +63,12 @@ public class Shell : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter(Collider c)
+    void OnCollisionEnter(Collision c)
     {
-        if (c.tag == "Ground")
+        if (c.collider.tag == "Ground")
+        {
+            Debug.Log("Sleeping");
             rigidbody.Sleep();
+        }
     }
 }

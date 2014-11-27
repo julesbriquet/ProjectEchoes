@@ -12,13 +12,19 @@ public class PlayerController : CachedBase {
     private Quaternion targetRotation;
     private Camera attachedCamera;
     private bool isGamepadConnected = false;
-    private GunSystem gunEntity;
+
+
+    private GunEntity currentGun;
+    public Transform hands;
+    public GunEntity[] gunsInInventory;
+    private int gunIndex = -1;
 
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();
-        gunEntity = gameObject.GetComponentInChildren<GunSystem>();
         attachedCamera = Camera.main;
+
+        EquipGun(0);
 	}
 	
 	// Update is called once per frame
@@ -98,10 +104,34 @@ public class PlayerController : CachedBase {
 
         if (triggerShoot)
         {
-            gunEntity.Shoot();
-            gunEntity.hasTriggerBeenRelease = false;
+            currentGun.Shoot();
+            currentGun.hasTriggerBeenRelease = false;
         }
         else
-            gunEntity.hasTriggerBeenRelease = true;
+            currentGun.hasTriggerBeenRelease = true;
+
+        bool changeGun = false;
+
+        Debug.Log(Input.GetButtonDown("RB_1"));
+        Debug.Log(Input.GetAxis("ChangeWeaponButton"));
+
+        if (isGamepadConnected)
+            changeGun = Input.GetButtonDown("RB_1");
+        else
+            changeGun = Input.GetAxis("ChangeWeaponButton") > 0 ? true : false;
+
+        if (changeGun)
+            EquipGun(gunIndex + 1);
+    }
+
+    void EquipGun(int weaponIndex)
+    {
+        if (currentGun)
+            Destroy(currentGun.gameObject);
+
+        gunIndex = weaponIndex % gunsInInventory.Length;
+        currentGun = Instantiate(gunsInInventory[gunIndex], hands.position, hands.rotation) as GunEntity;
+        currentGun.transform.parent = hands;
+
     }
 }
