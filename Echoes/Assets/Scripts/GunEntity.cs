@@ -24,13 +24,14 @@ public class GunEntity : MonoBehaviour {
     private float nextPossibleShoot;
 
     // Munition system
-    public int ammoInStock;
-    public int ammoByStock;
-    public int ammoAmount;
+    public int ammoInMag;
+    public int ammoPerMag;
+    public int totalAmmo;
     public float reloadingTime;
 
     // Handle audio
-    private AudioSource audioEntity;
+    private AudioSource shootAudioEntity;
+    private AudioSource reloadAudioEntity;
 
     // Handling Shell Ejection
     public Transform shellOrigin;
@@ -45,8 +46,11 @@ public class GunEntity : MonoBehaviour {
     {
         secondsBetweenShoots = 60 / roundPerMinute;
         nextPossibleShoot = 0;
-        audioEntity = GetComponent<AudioSource>();
+        AudioSource[] tmpAudioTable = GetComponents<AudioSource>();
+        shootAudioEntity = tmpAudioTable[0];
+        reloadAudioEntity = tmpAudioTable[1];
         rayTracer = GetComponent<LineRenderer>();
+
     }
 
     public void Shoot()
@@ -57,7 +61,7 @@ public class GunEntity : MonoBehaviour {
             RaycastHit hit;
 
             float shotDistance = 20;
-            audioEntity.Play();
+            shootAudioEntity.Play();
             if (Physics.Raycast(ray, out hit, shotDistance, collisionMask))
             {
                 shotDistance = hit.distance;
@@ -70,6 +74,9 @@ public class GunEntity : MonoBehaviour {
             // Compute time for enabling next shot (Mode Auto Only)
             nextPossibleShoot = Time.time + secondsBetweenShoots;
 
+            // Countdown ammo in mag
+            ammoInMag--;
+
             // Draw Ray in Game
             if (rayTracer)
                 StartCoroutine("RenderTracer", ray.direction * shotDistance);
@@ -80,16 +87,28 @@ public class GunEntity : MonoBehaviour {
             Rigidbody newShell = Instantiate(shellBody, shellOrigin.position, Quaternion.identity) as Rigidbody;
             newShell.AddForce(shellOrigin.right * Random.Range(150f, 200f) + shootOrigin.forward * Random.Range(-30f, 30f));
         }
+        else if (ammoInMag == 0 && CanReload())
+            ReloadWeapon();
     }
 
-    private bool CanShoot()
+    public bool CanShoot()
     {
-        if (typeOfGun == GunType.SemiAuto)
-            return hasTriggerBeenRelease && Time.time > nextPossibleShoot;
-        else if (typeOfGun == GunType.Auto)
-            return Time.time > nextPossibleShoot;
+        bool canShoot = Time.time > nextPossibleShoot && ammoInMag > 0;
 
-        return true;
+        if (typeOfGun == GunType.SemiAuto)
+            canShoot = canShoot && hasTriggerBeenRelease;
+
+        return canShoot;
+    }
+
+    public bool CanReload()
+    {
+        bool canReload = totalAmmo > 0 && ammoInMag < ammoPerMag;
+
+        if (typeOfGun == GunType.SemiAuto)
+            canReload = canReload && hasTriggerBeenRelease;
+
+        return canReload;
     }
 
     IEnumerator RenderTracer(Vector3 hitPoint)
@@ -101,5 +120,24 @@ public class GunEntity : MonoBehaviour {
 
         yield return new WaitForFixedUpdate();
         rayTracer.enabled = false;
+    }
+
+    public void ReloadWeapon()
+    {
+        int currentAmmoInMag = ammoInMag;
+        if (totalAmmo < ammoPerMag)
+        {
+            ammoInMag = totalAmmo;
+            Debug.Log("Weapon Reloaded, ammo:" + ammoInMag);
+        }
+        else
+        {
+            ammoInMag = ammoPerMag;
+            Debug.Log("Weapon Reloaded fully, ammo:" + ammoInMag);
+        }
+
+        reloadAudioEntity.Play();
+        totalAmmo -= (ammoInMag - currentAmmoInMag);
+        nextPossibleShoot = Time.time + reloadingTime;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(CharacterController))]
 public class PlayerController : CachedBase {
@@ -16,13 +17,27 @@ public class PlayerController : CachedBase {
 
     private GunEntity currentGun;
     public Transform hands;
-    public GunEntity[] gunsInInventory;
+    public GunEntity[] startingGuns;
+    private List<GameObject> gunsInInventory;
     private int gunIndex = -1;
 
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();
         attachedCamera = Camera.main;
+
+        gunsInInventory = new List<GameObject>();
+
+        for (int i = 0; i < startingGuns.Length; i++)
+        {
+            GunEntity gunEntityScript = Instantiate(startingGuns[i], hands.position - startingGuns[i].gunStockPosition.localPosition, hands.rotation) as GunEntity;
+            GameObject currentGunObj = gunEntityScript.gameObject;
+            currentGunObj.transform.parent = hands;
+            currentGunObj.SetActive(false);
+            gunsInInventory.Add(currentGunObj);
+
+            startingGuns[i] = gunEntityScript;
+        }
 
         EquipGun(0);
 	}
@@ -95,44 +110,65 @@ public class PlayerController : CachedBase {
 
     void ControlGun()
     {
-        bool triggerShoot = false;
-
-        if (isGamepadConnected)
-            triggerShoot = Input.GetAxisRaw("TriggersR_1") > 0 ? true : false;
-        else
-            triggerShoot = Input.GetButton("ShootButton");
-
-        if (triggerShoot)
+        if (currentGun)
         {
-            currentGun.Shoot();
-            currentGun.hasTriggerBeenRelease = false;
+
+            /*
+             * SHOOTING PART 
+             */
+            bool triggerShoot = false;
+
+            if (isGamepadConnected)
+                triggerShoot = Input.GetAxisRaw("TriggersR_1") > 0 ? true : false;
+            else
+                triggerShoot = Input.GetButton("ShootButton");
+
+            if (triggerShoot)
+            {
+                currentGun.Shoot();
+                currentGun.hasTriggerBeenRelease = false;
+            }
+            else
+                currentGun.hasTriggerBeenRelease = true;
+
+            bool changeGun = false;
+
+
+            /*
+             * CHANGE WEAPON PART 
+             */
+            if (isGamepadConnected)
+                changeGun = Input.GetButtonDown("RB_1");
+            else
+                changeGun = Input.GetAxis("ChangeWeaponButton") > 0 ? true : false;
+
+            if (changeGun)
+                EquipGun(gunIndex + 1);
+
+
+            /*
+             * RELOADING PART
+             */
+            bool reloadGun = false;
+            if (isGamepadConnected)
+                reloadGun = Input.GetButtonDown("X_1") && currentGun.CanReload();
+            else
+                reloadGun = Input.GetButtonDown("ReloadWeaponButton") && currentGun.CanReload();
+
+            if (reloadGun)
+                currentGun.ReloadWeapon();
+
         }
-        else
-            currentGun.hasTriggerBeenRelease = true;
-
-        bool changeGun = false;
-
-        //Debug.Log(Input.GetButtonDown("RB_1"));
-        //Debug.Log(Input.GetAxis("ChangeWeaponButton"));
-
-        if (isGamepadConnected)
-            changeGun = Input.GetButtonDown("RB_1");
-        else
-            changeGun = Input.GetAxis("ChangeWeaponButton") > 0 ? true : false;
-
-        if (changeGun)
-            EquipGun(gunIndex + 1);
     }
 
     void EquipGun(int weaponIndex)
     {
         if (currentGun)
-            Destroy(currentGun.gameObject);
+            gunsInInventory[gunIndex].SetActive(false);
 
-        gunIndex = weaponIndex % gunsInInventory.Length;
-
-        currentGun = Instantiate(gunsInInventory[gunIndex], hands.position - gunsInInventory[gunIndex].gunStockPosition.localPosition, hands.rotation) as GunEntity;
-        currentGun.transform.parent = hands;
+        gunIndex = weaponIndex % gunsInInventory.Count;
+        currentGun = startingGuns[gunIndex];
+        gunsInInventory[gunIndex].SetActive(true);
 
     }
 }
