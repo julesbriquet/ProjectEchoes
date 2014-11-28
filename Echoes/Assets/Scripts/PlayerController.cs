@@ -112,8 +112,8 @@ public class PlayerController : CachedBase {
 
         bool changeGun = false;
 
-        Debug.Log(Input.GetButtonDown("RB_1"));
-        Debug.Log(Input.GetAxis("ChangeWeaponButton"));
+        //Debug.Log(Input.GetButtonDown("RB_1"));
+        //Debug.Log(Input.GetAxis("ChangeWeaponButton"));
 
         if (isGamepadConnected)
             changeGun = Input.GetButtonDown("RB_1");
@@ -130,7 +130,8 @@ public class PlayerController : CachedBase {
             Destroy(currentGun.gameObject);
 
         gunIndex = weaponIndex % gunsInInventory.Length;
-        currentGun = Instantiate(gunsInInventory[gunIndex], hands.position, hands.rotation) as GunEntity;
+
+        currentGun = Instantiate(gunsInInventory[gunIndex], hands.position - gunsInInventory[gunIndex].gunStockPosition.localPosition, hands.rotation) as GunEntity;
         currentGun.transform.parent = hands;
 
     }

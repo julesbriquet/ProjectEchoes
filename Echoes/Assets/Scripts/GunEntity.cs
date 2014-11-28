@@ -13,6 +13,7 @@ public class GunEntity : MonoBehaviour {
 
     // Cast Shoot Ray Part
     public Transform shootOrigin;
+    public Transform gunStockPosition;
     private LineRenderer rayTracer;
 
     // Handle differents type of gun
@@ -21,7 +22,12 @@ public class GunEntity : MonoBehaviour {
     public bool hasTriggerBeenRelease = true;
     private float secondsBetweenShoots;
     private float nextPossibleShoot;
-    
+
+    // Munition system
+    public int ammoInStock;
+    public int ammoByStock;
+    public int ammoAmount;
+    public float reloadingTime;
 
     // Handle audio
     private AudioSource audioEntity;
@@ -29,6 +35,10 @@ public class GunEntity : MonoBehaviour {
     // Handling Shell Ejection
     public Transform shellOrigin;
     public Rigidbody shellBody;
+
+    // Handling damage
+    public LayerMask collisionMask;
+    public int weaponDamage;
 
     // Use this for initialization
     void Start()
@@ -48,9 +58,13 @@ public class GunEntity : MonoBehaviour {
 
             float shotDistance = 20;
             audioEntity.Play();
-            if (Physics.Raycast(ray, out hit, shotDistance))
+            if (Physics.Raycast(ray, out hit, shotDistance, collisionMask))
             {
                 shotDistance = hit.distance;
+
+                LivingEntity livingEntityTouched = hit.collider.GetComponent<LivingEntity>();
+                if (livingEntityTouched)
+                    livingEntityTouched.TakeDamage(weaponDamage);
             }
 
             // Compute time for enabling next shot (Mode Auto Only)
@@ -71,7 +85,7 @@ public class GunEntity : MonoBehaviour {
     private bool CanShoot()
     {
         if (typeOfGun == GunType.SemiAuto)
-            return hasTriggerBeenRelease;
+            return hasTriggerBeenRelease && Time.time > nextPossibleShoot;
         else if (typeOfGun == GunType.Auto)
             return Time.time > nextPossibleShoot;
 
