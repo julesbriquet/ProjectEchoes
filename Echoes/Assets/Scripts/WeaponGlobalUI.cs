@@ -28,9 +28,17 @@ public class WeaponGlobalUI : MonoBehaviour {
         ammoNumber.text = newAmmoNumber.ToString();
     }
 
-    public void createWeaponUI(int magCapacity, int bulletInMag, int numberOfLine, float distanceBetweenAmmo, Vector2 startingPoint, Sprite bulletSprite, Sprite gunIconSprite)
+    public void changeWeaponUI(int magCapacity, int bulletInMag, int numberOfLine, float distanceBetweenAmmo, Vector2 startingPoint, Sprite bulletSprite, Sprite gunIconSprite)
     {
-         
+        //GameObject empty = new GameObject();
+        //Instantiate(
+        // Change icon
+        changeCurrentGunIcon(gunIconSprite);
+        
+
+        /*foreach (Image ammo in ammoImageList)
+            Destroy(ammo);
+
         
         // Loading bullets
         int bulletPerLine = magCapacity /numberOfLine;
@@ -42,9 +50,9 @@ public class WeaponGlobalUI : MonoBehaviour {
         for (int i = 1; i <= magCapacity; ++i)
         {
             Image curBullet = Instantiate(bulletSpriteObject) as Image;
-            curBullet.rectTransform.position = instantiationPosition;
-            curBullet.sprite = bulletSprite;
             curBullet.transform.parent = this.transform;
+            curBullet.rectTransform.anchoredPosition = instantiationPosition;
+            curBullet.sprite = bulletSprite;
 
             if (i <= bulletInMag)
                 curBullet.color = Color.white;
@@ -59,7 +67,7 @@ public class WeaponGlobalUI : MonoBehaviour {
                 instantiationPosition.x += distanceBetweenAmmo;
 
             ammoImageList.Add(curBullet);
-        }
+        }*/
     }
 
 }
