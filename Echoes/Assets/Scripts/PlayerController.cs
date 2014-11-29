@@ -21,6 +21,8 @@ public class PlayerController : CachedBase {
     private List<GameObject> gunsInInventory;
     private int gunIndex = -1;
 
+    private WeaponGlobalUI globalWeaponUI;
+
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();
@@ -38,6 +40,8 @@ public class PlayerController : CachedBase {
 
             startingGuns[i] = gunEntityScript;
         }
+
+        globalWeaponUI = GameObject.FindGameObjectWithTag("WeaponUI").GetComponent<WeaponGlobalUI>();
 
         EquipGun(0);
 	}
@@ -125,7 +129,7 @@ public class PlayerController : CachedBase {
 
             if (triggerShoot)
             {
-                currentGun.Shoot();
+                currentGun.Shoot(globalWeaponUI);
                 currentGun.hasTriggerBeenRelease = false;
             }
             else
@@ -156,7 +160,7 @@ public class PlayerController : CachedBase {
                 reloadGun = Input.GetButtonDown("ReloadWeaponButton") && currentGun.CanReload();
 
             if (reloadGun)
-                currentGun.ReloadWeapon();
+                currentGun.ReloadWeapon(globalWeaponUI);
 
         }
     }
@@ -170,5 +174,8 @@ public class PlayerController : CachedBase {
         currentGun = startingGuns[gunIndex];
         gunsInInventory[gunIndex].SetActive(true);
 
+
+        globalWeaponUI.changeWeaponUI(currentGun.ammoPerMag, currentGun.ammoInMag, currentGun.gunUIEntity.numberOfLine, currentGun.gunUIEntity.distanceBetweenBullets, currentGun.gunUIEntity.startPosition, currentGun.gunUIEntity.bulletIcon, currentGun.gunUIEntity.gunIcon);
+        globalWeaponUI.updateNumberOfAmmo(currentGun.totalAmmo);
     }
 }

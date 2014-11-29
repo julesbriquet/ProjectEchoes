@@ -41,6 +41,12 @@ public class GunEntity : MonoBehaviour {
     public LayerMask collisionMask;
     public int weaponDamage;
 
+    public int shootRange;
+
+
+    // GUI Handler that contains data for that specific weapon
+    public GunUI gunUIEntity;
+
     // Use this for initialization
     void Start()
     {
@@ -53,16 +59,20 @@ public class GunEntity : MonoBehaviour {
 
     }
 
-    public void Shoot()
+    void Awake()
+    {
+        gunUIEntity = GetComponent<GunUI>();
+    }
+
+    public void Shoot(WeaponGlobalUI weaponUI)
     {
         if (CanShoot())
         {
             Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
             RaycastHit hit;
-
-            float shotDistance = 20;
+            float shotDistance = 0;
             shootAudioEntity.Play();
-            if (Physics.Raycast(ray, out hit, shotDistance, collisionMask))
+            if (Physics.Raycast(ray, out hit, shootRange, collisionMask))
             {
                 shotDistance = hit.distance;
 
@@ -88,7 +98,7 @@ public class GunEntity : MonoBehaviour {
             newShell.AddForce(shellOrigin.right * Random.Range(150f, 200f) + shootOrigin.forward * Random.Range(-30f, 30f));
         }
         else if (ammoInMag == 0 && CanReload())
-            ReloadWeapon();
+            ReloadWeapon(weaponUI);
     }
 
     public bool CanShoot()
@@ -122,22 +132,17 @@ public class GunEntity : MonoBehaviour {
         rayTracer.enabled = false;
     }
 
-    public void ReloadWeapon()
+    public void ReloadWeapon(WeaponGlobalUI weaponUI)
     {
         int currentAmmoInMag = ammoInMag;
         if (totalAmmo < ammoPerMag)
-        {
             ammoInMag = totalAmmo;
-            Debug.Log("Weapon Reloaded, ammo:" + ammoInMag);
-        }
         else
-        {
             ammoInMag = ammoPerMag;
-            Debug.Log("Weapon Reloaded fully, ammo:" + ammoInMag);
-        }
 
         reloadAudioEntity.Play();
         totalAmmo -= (ammoInMag - currentAmmoInMag);
+        weaponUI.updateNumberOfAmmo(totalAmmo);
         nextPossibleShoot = Time.time + reloadingTime;
     }
 }
