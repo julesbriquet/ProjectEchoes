@@ -4,15 +4,11 @@ using System.Collections;
 public class Shell : MonoBehaviour {
 
     private float lifeTime = 5;
-    private Material mat;
-    private Color originalColor;
     private float fadePercent;
 
     private float deathTime;
 	// Use this for initialization
 	void Start () {
-        mat = renderer.material;
-        originalColor = mat.color;
         transform.eulerAngles = transform.eulerAngles + new Vector3(90, 0, 0);
 
         StartCoroutine("Fade", -lifeTime);

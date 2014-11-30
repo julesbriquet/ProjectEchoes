@@ -10,4 +10,5 @@ public class GunUI : MonoBehaviour {
     public float distanceBetweenBullets = 3;
     public Vector2 startPosition = new Vector2(-16, -16);
 
+    public float scale = 0.5f;
 }

@@ -86,6 +86,7 @@ public class GunEntity : MonoBehaviour {
 
             // Countdown ammo in mag
             ammoInMag--;
+            weaponUI.updateAmmoInMagUI(gunUIEntity.numberOfLine, ammoPerMag, ammoInMag);
 
             // Draw Ray in Game
             if (rayTracer)
@@ -135,14 +136,14 @@ public class GunEntity : MonoBehaviour {
     public void ReloadWeapon(WeaponGlobalUI weaponUI)
     {
         int currentAmmoInMag = ammoInMag;
-        if (totalAmmo < ammoPerMag)
-            ammoInMag = totalAmmo;
+        if (totalAmmo + currentAmmoInMag < ammoPerMag)
+            ammoInMag = currentAmmoInMag + totalAmmo;
         else
             ammoInMag = ammoPerMag;
 
         reloadAudioEntity.Play();
         totalAmmo -= (ammoInMag - currentAmmoInMag);
-        weaponUI.updateNumberOfAmmo(totalAmmo);
+        weaponUI.reloadWeaponUI(totalAmmo, gunUIEntity.numberOfLine, ammoPerMag, ammoInMag);
         nextPossibleShoot = Time.time + reloadingTime;
     }
 }

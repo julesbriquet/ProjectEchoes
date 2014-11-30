@@ -175,7 +175,7 @@ public class PlayerController : CachedBase {
         gunsInInventory[gunIndex].SetActive(true);
 
 
-        globalWeaponUI.changeWeaponUI(currentGun.ammoPerMag, currentGun.ammoInMag, currentGun.gunUIEntity.numberOfLine, currentGun.gunUIEntity.distanceBetweenBullets, currentGun.gunUIEntity.startPosition, currentGun.gunUIEntity.bulletIcon, currentGun.gunUIEntity.gunIcon);
-        globalWeaponUI.updateNumberOfAmmo(currentGun.totalAmmo);
+        globalWeaponUI.changeWeaponUI(currentGun.ammoPerMag, currentGun.ammoInMag, currentGun.gunUIEntity.numberOfLine, currentGun.gunUIEntity.startPosition, currentGun.gunUIEntity.bulletIcon, currentGun.gunUIEntity.gunIcon, currentGun.gunUIEntity.scale);
+        globalWeaponUI.reloadWeaponUI(currentGun.totalAmmo, currentGun.gunUIEntity.numberOfLine, currentGun.ammoPerMag, currentGun.ammoInMag);
     }
 }
