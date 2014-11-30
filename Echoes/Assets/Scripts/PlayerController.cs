@@ -14,36 +14,15 @@ public class PlayerController : CachedBase {
     private Camera attachedCamera;
     private bool isGamepadConnected = false;
 
-
-    private GunEntity currentGun;
-    public Transform hands;
-    public GunEntity[] startingGuns;
-    private List<GameObject> gunsInInventory;
-    private int gunIndex = -1;
-
-    private WeaponGlobalUI globalWeaponUI;
+    private Player player;
+    
 
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();
         attachedCamera = Camera.main;
+        player = GetComponent<Player>();
 
-        gunsInInventory = new List<GameObject>();
-
-        for (int i = 0; i < startingGuns.Length; i++)
-        {
-            GunEntity gunEntityScript = Instantiate(startingGuns[i], hands.position - startingGuns[i].gunStockPosition.localPosition, hands.rotation) as GunEntity;
-            GameObject currentGunObj = gunEntityScript.gameObject;
-            currentGunObj.transform.parent = hands;
-            currentGunObj.SetActive(false);
-            gunsInInventory.Add(currentGunObj);
-
-            startingGuns[i] = gunEntityScript;
-        }
-
-        globalWeaponUI = GameObject.FindGameObjectWithTag("WeaponUI").GetComponent<WeaponGlobalUI>();
-
-        EquipGun(0);
 	}
 	
 	// Update is called once per frame
@@ -79,7 +58,7 @@ public class PlayerController : CachedBase {
         Vector3 motion = inputLeftStick.normalized;
 
         // Stick player to ground
-        motion += Vector3.up * -5;
+        motion += Vector3.up * -1;
 
 
         if (isRunning)
@@ -114,7 +93,7 @@ public class PlayerController : CachedBase {
 
     void ControlGun()
     {
-        if (currentGun)
+        if (player.currentGun)
         {
 
             /*
@@ -129,11 +108,11 @@ public class PlayerController : CachedBase {
 
             if (triggerShoot)
             {
-                currentGun.Shoot(globalWeaponUI);
-                currentGun.hasTriggerBeenRelease = false;
+                player.currentGun.Shoot(player.globalWeaponUI);
+                player.currentGun.hasTriggerBeenRelease = false;
             }
             else
-                currentGun.hasTriggerBeenRelease = true;
+                player.currentGun.hasTriggerBeenRelease = true;
 
             bool changeGun = false;
 
@@ -147,7 +126,7 @@ public class PlayerController : CachedBase {
                 changeGun = Input.GetAxis("ChangeWeaponButton") > 0 ? true : false;
 
             if (changeGun)
-                EquipGun(gunIndex + 1);
+                player.EquipGun(player.gunIndex + 1);
 
 
             /*
@@ -155,27 +134,14 @@ public class PlayerController : CachedBase {
              */
             bool reloadGun = false;
             if (isGamepadConnected)
-                reloadGun = Input.GetButtonDown("X_1") && currentGun.CanReload();
+                reloadGun = Input.GetButtonDown("X_1") && player.currentGun.CanReload();
             else
-                reloadGun = Input.GetButtonDown("ReloadWeaponButton") && currentGun.CanReload();
+                reloadGun = Input.GetButtonDown("ReloadWeaponButton") && player.currentGun.CanReload();
 
             if (reloadGun)
-                currentGun.ReloadWeapon(globalWeaponUI);
+                player.currentGun.ReloadWeapon(player.globalWeaponUI);
 
         }
     }
-
-    void EquipGun(int weaponIndex)
-    {
-        if (currentGun)
-            gunsInInventory[gunIndex].SetActive(false);
-
-        gunIndex = weaponIndex % gunsInInventory.Count;
-        currentGun = startingGuns[gunIndex];
-        gunsInInventory[gunIndex].SetActive(true);
-
-
-        globalWeaponUI.changeWeaponUI(currentGun.ammoPerMag, currentGun.ammoInMag, currentGun.gunUIEntity.numberOfLine, currentGun.gunUIEntity.startPosition, currentGun.gunUIEntity.bulletIcon, currentGun.gunUIEntity.gunIcon, currentGun.gunUIEntity.scale);
-        globalWeaponUI.reloadWeaponUI(currentGun.totalAmmo, currentGun.gunUIEntity.numberOfLine, currentGun.ammoPerMag, currentGun.ammoInMag);
-    }
+    
 }

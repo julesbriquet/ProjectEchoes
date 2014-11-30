@@ -38,9 +38,13 @@ public class WeaponGlobalUI : MonoBehaviour {
 
     public void reloadWeaponUI(int newAmmoNumber, int numberOfLine, int magCapacity, int bulletInMag)
     {
-        ammoNumber.text = newAmmoNumber.ToString();
-
         updateAmmoInMagUI(numberOfLine, magCapacity, bulletInMag);
+        updateTotalAmmo(newAmmoNumber);
+    }
+
+    public void updateTotalAmmo(int newAmmoNumber)
+    {
+        ammoNumber.text = newAmmoNumber.ToString();
     }
 
     public void updateAmmoInMagUI(int numberOfLine, int magCapacity, int bulletInMag)

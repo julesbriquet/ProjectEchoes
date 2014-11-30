@@ -70,7 +70,7 @@ public class GunEntity : MonoBehaviour {
         {
             Ray ray = new Ray(shootOrigin.position, shootOrigin.forward);
             RaycastHit hit;
-            float shotDistance = 0;
+            float shotDistance = shootRange;
             shootAudioEntity.Play();
             if (Physics.Raycast(ray, out hit, shootRange, collisionMask))
             {
@@ -91,6 +91,8 @@ public class GunEntity : MonoBehaviour {
             // Draw Ray in Game
             if (rayTracer)
                 StartCoroutine("RenderTracer", ray.direction * shotDistance);
+
+            
 
             // Draw Ray in Debug
             Debug.DrawRay(ray.origin, ray.direction * shotDistance, Color.red, 2);
