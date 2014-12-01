@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 [RequireComponent (typeof(CharacterController))]
 public class PlayerController : CachedBase {
@@ -15,7 +16,8 @@ public class PlayerController : CachedBase {
     private bool isGamepadConnected = false;
 
     private Player player;
-    
+
+    private Image sightImage;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +25,7 @@ public class PlayerController : CachedBase {
         attachedCamera = Camera.main;
         player = GetComponent<Player>();
 
+        sightImage = GameObject.FindGameObjectWithTag("SightWeapon").GetComponent<Image>();
 	}
 	
 	// Update is called once per frame
@@ -33,6 +36,10 @@ public class PlayerController : CachedBase {
 
         ControlGun();
 
+        
+        Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position);
+        Vector2 gunScreenPositionWithCenterOrigin = new Vector2((int)(gunScreenPosition.x - (Screen.width / 2)), (int)(gunScreenPosition.y - (Screen.height / 2)));
+        sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPositionWithCenterOrigin.x + transform.forward.x * 10 * player.currentGun.shootRange, gunScreenPositionWithCenterOrigin.y + transform.forward.z * 10 * player.currentGun.shootRange);
 	}
 
 

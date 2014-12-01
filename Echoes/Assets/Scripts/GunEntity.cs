@@ -47,6 +47,7 @@ public class GunEntity : MonoBehaviour {
     // GUI Handler that contains data for that specific weapon
     public GunUI gunUIEntity;
 
+
     // Use this for initialization
     void Start()
     {
@@ -56,6 +57,7 @@ public class GunEntity : MonoBehaviour {
         shootAudioEntity = tmpAudioTable[0];
         reloadAudioEntity = tmpAudioTable[1];
         rayTracer = GetComponent<LineRenderer>();
+
 
     }
 

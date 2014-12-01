@@ -18,7 +18,6 @@ public class WeaponGlobalUI : MonoBehaviour {
     // Display white bullet
     public Image bulletInMagLine2;
 
-
     private List<GameObject> weaponBulletUI;
 
     void Start()
@@ -33,8 +32,9 @@ public class WeaponGlobalUI : MonoBehaviour {
         bulletEmptyLine2 = gunImageUIList[4];
         bulletInMagLine2 = gunImageUIList[5];
 
-
     }
+
+
 
     public void reloadWeaponUI(int newAmmoNumber, int numberOfLine, int magCapacity, int bulletInMag)
     {
