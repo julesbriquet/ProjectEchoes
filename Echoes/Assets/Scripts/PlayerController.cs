@@ -13,6 +13,7 @@ public class PlayerController : CachedBase {
     private CharacterController controller;
     private Quaternion targetRotation;
     private Camera attachedCamera;
+    private CameraController attachedCameraControl;
     private bool isGamepadConnected = false;
 
     private Player player;
@@ -23,6 +24,7 @@ public class PlayerController : CachedBase {
 	void Start () {
         controller = GetComponent<CharacterController>();
         attachedCamera = Camera.main;
+        attachedCameraControl = attachedCamera.GetComponent<CameraController>();
         player = GetComponent<Player>();
 
         sightImage = GameObject.FindGameObjectWithTag("SightWeapon").GetComponent<Image>();
@@ -69,9 +71,15 @@ public class PlayerController : CachedBase {
 
 
         if (isRunning)
+        {
             motion *= runSpeed;
+            attachedCameraControl.forwardZoom = transform.forward * 20;
+        }
         else
+        {
+            attachedCameraControl.forwardZoom = Vector3.zero;
             motion *= walkSpeed;
+        }
 
         controller.Move(motion * Time.deltaTime);
     }
