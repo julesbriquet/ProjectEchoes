@@ -98,6 +98,7 @@ public class GunEntity : MonoBehaviour {
 
             // Draw Ray in Debug
             Debug.DrawRay(ray.origin, ray.direction * shotDistance, Color.red, 2);
+            Debug.Log("Direction " + ray.direction * shotDistance);
 
             Rigidbody newShell = Instantiate(shellBody, shellOrigin.position, Quaternion.identity) as Rigidbody;
             newShell.AddForce(shellOrigin.right * Random.Range(150f, 200f) + shootOrigin.forward * Random.Range(-30f, 30f));

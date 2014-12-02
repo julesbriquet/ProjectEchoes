@@ -38,11 +38,11 @@ public class PlayerController : CachedBase {
 
         ControlGun();
 
-        
-        Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position);
-        Vector2 gunScreenPositionWithCenterOrigin = new Vector2((int)(gunScreenPosition.x - (Screen.width / 2)), (int)(gunScreenPosition.y - (Screen.height / 2)));
-        sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPositionWithCenterOrigin.x + transform.forward.x * 10 * player.currentGun.shootRange, gunScreenPositionWithCenterOrigin.y + transform.forward.z * 10 * player.currentGun.shootRange);
-	}
+
+        // Change sight position
+        Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
+        sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
+    }
 
 
 
@@ -103,6 +103,7 @@ public class PlayerController : CachedBase {
                 targetRotation = Quaternion.LookRotation(inputRightStick - new Vector3(transform.position.x, 0, transform.position.z));
 
             transform.eulerAngles = Vector3.up * Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y, rotationSpeed * Time.deltaTime);
+        
         }
     }
 
