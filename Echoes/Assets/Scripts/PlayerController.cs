@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class PlayerController : CachedBase {
 
     public float rotationSpeed = 450;
-    public float walkSpeed = 8;
-    public float runSpeed = 24;
+    public float walkSpeed = 15;
 
     private CharacterController controller;
     private Quaternion targetRotation;
@@ -37,7 +36,7 @@ public class PlayerController : CachedBase {
         ControlAim();
 
         ControlGun();
-
+        ControlZoom();
 
         // Change sight position
         Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
@@ -54,32 +53,14 @@ public class PlayerController : CachedBase {
             inputLeftStick = new Vector3(Input.GetAxisRaw("L_XAxis_1"), 0, Input.GetAxisRaw("L_YAxis_1"));
         else
             inputLeftStick = new Vector3(Input.GetAxisRaw("HorizontalKeyBoard"), 0, Input.GetAxisRaw("VerticalKeyBoard"));
-
-        bool isRunning = false;
-        if (isGamepadConnected)
-            isRunning = Input.GetAxisRaw("TriggersL_1") > 0 ? true : false;
-        else
-            isRunning = Input.GetButton("RunButton");
-
-
+        
 
 
         Vector3 motion = inputLeftStick.normalized;
 
         // Stick player to ground
         motion += Vector3.up * -1;
-
-
-        if (isRunning)
-        {
-            motion *= runSpeed;
-            attachedCameraControl.forwardZoom = transform.forward * 20;
-        }
-        else
-        {
-            attachedCameraControl.forwardZoom = Vector3.zero;
-            motion *= walkSpeed;
-        }
+        motion *= walkSpeed;
 
         controller.Move(motion * Time.deltaTime);
     }
@@ -159,5 +140,18 @@ public class PlayerController : CachedBase {
 
         }
     }
-    
+
+    void ControlZoom()
+    {
+        bool isZoomButtonOn = false;
+        if (isGamepadConnected)
+            isZoomButtonOn = Input.GetAxisRaw("TriggersL_1") > 0 ? true : false;
+        else
+            isZoomButtonOn = Input.GetButton("RunButton");
+
+        if (isZoomButtonOn)
+            attachedCameraControl.forwardZoom = transform.forward * 18;
+        else
+            attachedCameraControl.forwardZoom = Vector3.zero;
+    }
 }

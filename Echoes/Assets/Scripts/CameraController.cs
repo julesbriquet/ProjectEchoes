@@ -6,6 +6,7 @@ public class CameraController : CachedBase {
     private Transform targetTransform;
     private Vector3 targetPosition;
     public Vector3 forwardZoom;
+    public Camera attachedCamera;
 
 	// Use this for initialization
 	void Start () {

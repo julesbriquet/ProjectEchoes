@@ -14,14 +14,14 @@ public class GunEntity : MonoBehaviour {
     // Cast Shoot Ray Part
     public Transform shootOrigin;
     public Transform gunStockPosition;
-    private LineRenderer rayTracer;
+    protected LineRenderer rayTracer;
 
     // Handle differents type of gun
     public GunType typeOfGun;
     public float roundPerMinute;
     public bool hasTriggerBeenRelease = true;
-    private float secondsBetweenShoots;
-    private float nextPossibleShoot;
+    protected float secondsBetweenShoots;
+    protected float nextPossibleShoot;
 
     // Munition system
     public int ammoInMag;
@@ -30,8 +30,8 @@ public class GunEntity : MonoBehaviour {
     public float reloadingTime;
 
     // Handle audio
-    private AudioSource shootAudioEntity;
-    private AudioSource reloadAudioEntity;
+    protected AudioSource shootAudioEntity;
+    protected AudioSource reloadAudioEntity;
 
     // Handling Shell Ejection
     public Transform shellOrigin;
@@ -49,7 +49,7 @@ public class GunEntity : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start()
+    public virtual void Start()
     {
         secondsBetweenShoots = 60 / roundPerMinute;
         nextPossibleShoot = 0;
@@ -57,16 +57,14 @@ public class GunEntity : MonoBehaviour {
         shootAudioEntity = tmpAudioTable[0];
         reloadAudioEntity = tmpAudioTable[1];
         rayTracer = GetComponent<LineRenderer>();
-
-
     }
 
-    void Awake()
+    public void Awake()
     {
         gunUIEntity = GetComponent<GunUI>();
     }
 
-    public void Shoot(WeaponGlobalUI weaponUI)
+    public virtual void Shoot(WeaponGlobalUI weaponUI)
     {
         if (CanShoot())
         {
