@@ -30,6 +30,7 @@ public class PlayerController : CachedBase {
         player = GetComponent<Player>();
 
         sightImage = GameObject.FindGameObjectWithTag("SightWeapon").GetComponent<Image>();
+        Screen.showCursor = false;
 	}
 	
 	// Update is called once per frame
