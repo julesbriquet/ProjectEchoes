@@ -3,14 +3,10 @@ using System.Collections;
 
 public class TeleportGun : GunEntity {
 
-    public Transform ballBody;
+    public TeleportBall ballBody;
+    private TeleportBall lastSpawnedBall;
 
-	// Use this for initialization
-	void Start () {
-        base.Start();
-    }
-
-
+	
     public override void Shoot(WeaponGlobalUI weaponUI)
     {
         if (CanShoot())
@@ -28,8 +24,16 @@ public class TeleportGun : GunEntity {
                 Transform livingEntityTouched = hit.collider.GetComponent<Transform>();
                 if (livingEntityTouched)
                 {
-                    Transform objectTransform = Instantiate(ballBody, hit.point, Quaternion.identity) as Transform;
-                    Destroy(objectTransform.gameObject, 1.0f);
+                    if (lastSpawnedBall)
+                        Destroy(lastSpawnedBall.gameObject);
+
+                    Quaternion teleportBallRotation = Quaternion.FromToRotation(Vector3.right, hit.normal);
+                    lastSpawnedBall = Instantiate(ballBody, hit.point, teleportBallRotation) as TeleportBall;
+                    Vector3 newTeleportPoint = hit.point + (hit.normal * 2);
+                    lastSpawnedBall.teleportPosition = newTeleportPoint;
+                    //Debug.Log("WALAK" + hit.normal);
+                    //Debug.Log("ANGLE" + hit.transform.eulerAngles);
+                    
                 }
 
                 // Compute time for enabling next shot (Mode Auto Only)
@@ -61,5 +65,6 @@ public class TeleportGun : GunEntity {
         }
         else if (ammoInMag == 0 && CanReload())
             ReloadWeapon(weaponUI);
+
     }
 }

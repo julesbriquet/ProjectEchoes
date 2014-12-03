@@ -19,6 +19,9 @@ public class PlayerController : CachedBase {
 
     private Image sightImage;
 
+    // Time until teleport
+    private float teleportSecondCount;
+
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();
@@ -37,10 +40,16 @@ public class PlayerController : CachedBase {
 
         ControlGun();
         ControlZoom();
+        ControlTeleport();
 
         // Change sight position
         Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
         sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
+
+        if (gunScreenPosition.y > Screen.height)
+            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, Screen.height - 2);
+        if (gunScreenPosition.y < 0)
+            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, 2);
     }
 
 
@@ -153,5 +162,41 @@ public class PlayerController : CachedBase {
             attachedCameraControl.forwardZoom = transform.forward * 18;
         else
             attachedCameraControl.forwardZoom = Vector3.zero;
+    }
+
+    void ControlTeleport()
+    {
+        bool isTeleportButtonOn = false;
+
+        if (isGamepadConnected)
+            isTeleportButtonOn = Input.GetButton("LB_1");
+        else
+            isTeleportButtonOn = Input.GetButton("TeleportButton");
+
+        if (isTeleportButtonOn)
+        {
+            // Check if on for 3 seconds
+            if (teleportSecondCount < 2)
+                teleportSecondCount += Time.deltaTime;
+            else
+            {
+                // Do teleportation if button has been hold
+                Debug.Log("POWER RANGERS TELEPORTATION!");
+                GameObject teleportBallObj = GameObject.FindGameObjectWithTag("TeleportBall");
+
+                // If a teleportation ball is in the map
+                if (teleportBallObj)
+                {
+                    TeleportBall tpBall = teleportBallObj.GetComponent<TeleportBall>();
+                    this.transform.position = tpBall.teleportPosition;
+                }
+                
+                teleportSecondCount = 0;
+            }
+
+        }
+        else
+            teleportSecondCount = 0;
+
     }
 }
