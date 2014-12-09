@@ -50,14 +50,8 @@ public class PlayerController : CachedBase {
             ControlTeleport();
 
             // Change sight position
-            Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
-            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
-
-            if (gunScreenPosition.y > Screen.height)
-                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, Screen.height - 2);
-            if (gunScreenPosition.y < 0)
-                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, 2);
-
+            //Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
+            //sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
         }
     }
 
@@ -103,6 +97,24 @@ public class PlayerController : CachedBase {
 
             transform.eulerAngles = Vector3.up * Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y, rotationSpeed * Time.deltaTime);
         
+        }
+
+
+
+        // CHANGE SIGHT POSITION
+        if (Vector3.Distance(inputRightStick, player.currentGun.shootOrigin.position) < player.currentGun.shootRange)
+        {
+            sightImage.rectTransform.anchoredPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        }
+        else
+        {
+            Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
+            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
+
+            if (gunScreenPosition.y > Screen.height)
+                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, Screen.height - 2);
+            if (gunScreenPosition.y < 0)
+                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, 2);
         }
     }
 
