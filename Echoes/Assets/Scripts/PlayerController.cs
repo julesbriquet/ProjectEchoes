@@ -13,7 +13,7 @@ public class PlayerController : CachedBase {
     private Quaternion targetRotation;
     private Camera attachedCamera;
     private CameraController attachedCameraControl;
-    private bool isGamepadConnected = false;
+    public bool isGamepadConnected = false;
 
     private Player player;
 
@@ -21,6 +21,8 @@ public class PlayerController : CachedBase {
 
     // Time until teleport
     private float teleportSecondCount;
+
+    public bool enablePlayerControl = true;
 
 	// Use this for initialization
 	void Start () {
@@ -35,22 +37,28 @@ public class PlayerController : CachedBase {
 	
 	// Update is called once per frame
 	void Update () {
+
         isGamepadConnected = Input.GetJoystickNames().Length > 0;
-        ControlMovements();
-        ControlAim();
 
-        ControlGun();
-        ControlZoom();
-        ControlTeleport();
+        if (enablePlayerControl)
+        {
+            ControlMovements();
+            ControlAim();
 
-        // Change sight position
-        Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
-        sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
+            ControlGun();
+            ControlZoom();
+            ControlTeleport();
 
-        if (gunScreenPosition.y > Screen.height)
-            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, Screen.height - 2);
-        if (gunScreenPosition.y < 0)
-            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, 2);
+            // Change sight position
+            Vector3 gunScreenPosition = attachedCamera.WorldToScreenPoint(player.currentGun.shootOrigin.position + (player.currentGun.shootRange * transform.forward));
+            sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, gunScreenPosition.y);
+
+            if (gunScreenPosition.y > Screen.height)
+                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, Screen.height - 2);
+            if (gunScreenPosition.y < 0)
+                sightImage.rectTransform.anchoredPosition = new Vector2(gunScreenPosition.x, 2);
+
+        }
     }
 
 
@@ -199,5 +207,13 @@ public class PlayerController : CachedBase {
         else
             teleportSecondCount = 0;
 
+    }
+
+    public bool IsSkipButtonPressed()
+    {
+        if (isGamepadConnected)
+            return (Input.GetButtonDown("A_1"));
+        else
+            return Input.GetButtonDown("KeyBoardSkipButton");
     }
 }
