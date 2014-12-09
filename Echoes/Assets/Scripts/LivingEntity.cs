@@ -6,7 +6,7 @@ public class LivingEntity : MonoBehaviour {
     public int maxHealth;
     private int health;
 
-    void Start()
+    public virtual void Start()
     {
         health = maxHealth;
     }

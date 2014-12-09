@@ -24,6 +24,13 @@ public class PlayerController : CachedBase {
 
     public bool enablePlayerControl = true;
 
+    public override void Awake()
+    {
+        base.Awake(); //does the caching.
+        //Debug.Log ("Awake called!");
+    }
+
+
 	// Use this for initialization
 	void Start () {
         controller = GetComponent<CharacterController>();

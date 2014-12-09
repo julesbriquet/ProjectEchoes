@@ -14,6 +14,8 @@ public class InstructionUI : MonoBehaviour {
     private Image nextButtonImage;
     public PlayerController playerControl;
 
+    public GameObject[] objectListToActiveAfterInstruction;
+
 	// Use this for initialization
 	void Start () {
 
@@ -48,6 +50,10 @@ public class InstructionUI : MonoBehaviour {
             {
                 this.gameObject.SetActive(false);
                 playerControl.enablePlayerControl = true;
+                foreach (GameObject objectToActive in objectListToActiveAfterInstruction)
+                {
+                    objectToActive.SetActive(true);
+                }
             }
             else
                 currentInstructionImage.sprite = spriteList[indexSpriteList];

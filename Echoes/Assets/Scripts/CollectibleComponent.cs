@@ -16,6 +16,13 @@ public class CollectibleComponent : CachedBase {
     private Vector3 startPosition;
     public CollectibleType typeOfCollectible;
 
+    public override void Awake()
+    {
+        base.Awake(); //does the caching.
+        //Debug.Log ("Awake called!");
+    }
+
+
     // Use this for initialization
 	void Start () {
         startPosition = this.transform.position;
