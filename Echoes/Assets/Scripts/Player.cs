@@ -57,5 +57,7 @@ public class Player : LivingEntity {
 
         globalWeaponUI.changeWeaponUI(currentGun.ammoPerMag, currentGun.ammoInMag, currentGun.gunUIEntity.numberOfLine, currentGun.gunUIEntity.startPosition, currentGun.gunUIEntity.bulletIcon, currentGun.gunUIEntity.gunIcon, currentGun.gunUIEntity.scale);
         globalWeaponUI.reloadWeaponUI(currentGun.totalAmmo, currentGun.gunUIEntity.numberOfLine, currentGun.ammoPerMag, currentGun.ammoInMag);
+
+        currentGun.hasTriggerBeenRelease = false;
     }
 }

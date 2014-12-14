@@ -203,8 +203,7 @@ public class PlayerController : CachedBase {
 
         if (isTeleportButtonOn)
         {
-            // Check if on for 3 seconds
-            if (teleportSecondCount < 2)
+            if (teleportSecondCount < 1)
                 teleportSecondCount += Time.deltaTime;
             else
             {
